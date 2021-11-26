@@ -30,9 +30,10 @@ public static class Program
 
     private static WebApplication ConfigureBuilder(this WebApplicationBuilder builder, ILogger logger)
     {
-        builder.Host.UseLightInject();
+        builder.Host
+               .UseLightInject()
+               .UseSerilog(logger);
         builder.Services
-               .AddSingleton(logger)
                .AddSingleton(new PagingValidator())
                .AddMvc();
 
@@ -41,7 +42,8 @@ public static class Program
 
     private static WebApplication ConfigureApp(this WebApplication app)
     {
-        app.UseRouting()
+        app.UseSerilogRequestLogging()
+           .UseRouting()
            .UseEndpoints(builder => builder.MapControllers());
         return app;
     }

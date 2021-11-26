@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +28,27 @@ public static class Paging
         if (!validationResult.IsValid)
             validationResult.AddToModelState(controller.ModelState, string.Empty);
         return !validationResult.IsValid;
+    }
+
+    public static bool CheckPagingParametersForErrors(int skip,
+                                                      int take,
+                                                      [NotNullWhen(true)] out Dictionary<string, string>? errors)
+    {
+        errors = null;
+
+        if (skip < 0)
+        {
+            errors ??= new Dictionary<string, string>();
+            errors.Add(nameof(skip), "skip must not be less than 0");
+        }
+
+        if (take is < 1 or > 100)
+        {
+            errors ??= new Dictionary<string, string>();
+            errors.Add(nameof(take), "take must be between 1 and 100");
+        }
+
+        return errors != null;
     }
 }
 

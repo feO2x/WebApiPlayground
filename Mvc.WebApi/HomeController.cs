@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Mvc.WebApi.Infrastructure;
 
 namespace Mvc.WebApi;
@@ -35,6 +36,21 @@ public sealed class HomeController : ControllerBase
             return BadRequest(ModelState);
 
         return new HomeResult("Ha Ha Ha!");
+    }
+
+    [HttpGet("/api/höhöhö")]
+    public ActionResult<HomeResult> GetHöhöhö(int skip = 0, int take = 30)
+    {
+        if (Paging.CheckPagingParametersForErrors(skip, take, out var errors))
+            return BadRequest(errors);
+
+        return new HomeResult("Hi Hi Hi!");
+    }
+
+    [HttpGet("/api/exception")]
+    public IActionResult GetException()
+    {
+        throw new Exception("In your face!");
     }
 }
 
